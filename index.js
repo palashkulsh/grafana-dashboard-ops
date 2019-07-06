@@ -10,7 +10,7 @@ function transform(config, options){
   if(options.resize){
     let dim = options.resize.split('x');
     let resizeOpts = {
-      maxX: 23, //max graphs per row
+      maxX: 24, //max graphs per row
       maxY: -1,
       h: Number(dim[0])  || 3,
       w: Number(dim[1]) || 3 ,
