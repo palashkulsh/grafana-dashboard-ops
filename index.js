@@ -10,10 +10,10 @@ function transform(config, options){
   if(options.resize){
     let dim = options.resize.split('x');
     let resizeOpts = {
-      maxX: 24, //max graphs per row
+      maxX: 23, //max graphs per row
       maxY: -1,
-      h: dim[0] || 3,
-      w: dim[1] || 3,
+      h: Number(dim[0])  || 3,
+      w: Number(dim[1]) || 3 ,
       perRow: 8
     }
     config =resize(config , resizeOpts);
@@ -50,8 +50,15 @@ function resize(config, opts){
   config.panels.forEach(function(eachPanel, index){    
     eachPanel.gridPos.h = Math.floor(opts.h);
     eachPanel.gridPos.w = Math.floor(opts.w);
-    eachPanel.gridPos.x = Math.floor((index % opts.perRow) * opts.w);
-    eachPanel.gridPos.y = Math.floor(Math.floor(index / opts.perRow) * opts.h);
+    eachPanel.gridPos.x = Number(lastX);
+    eachPanel.gridPos.y = Number(lastY);
+    lastX += opts.w;
+    let willOverFlow = (lastX + opts.w > opts.maxX)
+    lastY = willOverFlow ? lastY + opts.h : lastY;
+    lastX = willOverFlow ? 0 : lastX;
+
+    // eachPanel.gridPos.x = Math.floor((index % opts.perRow) * opts.w);
+    // eachPanel.gridPos.y = Math.floor(Math.floor(index / opts.perRow) * opts.h);
     if(eachPanel.maxPerRow){
       eachPanel.maxPerRow = opts.w;
     }
