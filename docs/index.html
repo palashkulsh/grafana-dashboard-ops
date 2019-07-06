@@ -32,9 +32,9 @@
 
       function axis(config, opts){
       console.log('in axis',opts)
-      let xshow = Number(opts.ha) ? false : true;
-      let yshow = Number(opts.ha) ? false : true;
-      let lshow = Number(opts.hl) ? false : true;
+      let xshow = opts.ha ? false : true;
+      let yshow = opts.ha ? false : true;
+      let lshow = opts.hl ? false : true;
       config.panels.forEach(function(eachPanel, index){
       eachPanel.xaxis && (eachPanel.xaxis.show = xshow);
       eachPanel.yaxes && eachPanel.yaxes.forEach(function (eachY){
@@ -62,12 +62,12 @@
       }
 
       function perform_op() {
+      
       document.getElementById("sp_err").textContent = "";
       var h = parseInt(document.getElementById("ip_height").value);
       var w = parseInt(document.getElementById("ip_width").value);
-      var ha = parseInt(document.getElementById("cb_hide_axis").value);
-      var hl = parseInt(document.getElementById("cb_hide_legends").value);
-      console.log(ha,hl)
+      var ha = document.getElementById("cb_hide_axis").checked;
+      var hl = document.getElementById("cb_hide_legends").checked;
       var input = document.getElementById("ta_input").value;
       try {
       input = JSON.parse(input)
