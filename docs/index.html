@@ -19,7 +19,7 @@
       config =resize(config , resizeOpts);
       }
 
-      if (isDefined(options.axis)){
+      if (isDefined(options.ha) || isDefined(options.hl)){
       let axisOpts = {
       ha : options.ha,
       hl: options.hl
@@ -31,7 +31,7 @@
       }
 
       function axis(config, opts){
-      debugger
+      console.log('in axis',opts)
       let xshow = Number(opts.ha) ? false : true;
       let yshow = Number(opts.ha) ? false : true;
       let lshow = Number(opts.hl) ? false : true;
@@ -67,6 +67,7 @@
       var w = parseInt(document.getElementById("ip_width").value);
       var ha = parseInt(document.getElementById("cb_hide_axis").value);
       var hl = parseInt(document.getElementById("cb_hide_legends").value);
+      console.log(ha,hl)
       var input = document.getElementById("ta_input").value;
       try {
       input = JSON.parse(input)
