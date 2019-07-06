@@ -1,1 +1,117 @@
-hello world
+<html>
+  <head>
+    <title>
+      Grafana dashboard editor
+    </title>
+    <script>
+      function isDefined(value){
+      return value !== undefined && value !== null
+      }
+
+      function transform(config, options){
+      if(options.h && options.w){
+      let resizeOpts = {
+      maxX: 24, //max graphs per row
+      h: options.h  || 3,
+      w: options.w || 3 ,
+      perRow: 8
+      }
+      config =resize(config , resizeOpts);
+      }
+
+      if (isDefined(options.axis)){
+      let axisOpts = {
+      ha : options.ha,
+      hl: options.hl
+      };
+      config = axis(config, axisOpts);
+      }
+      config.version += 1;
+      return config;
+      }
+
+      function axis(config, opts){
+      debugger
+      let xshow = Number(opts.ha) ? false : true;
+      let yshow = Number(opts.ha) ? false : true;
+      let lshow = Number(opts.hl) ? false : true;
+      config.panels.forEach(function(eachPanel, index){
+      eachPanel.xaxis && (eachPanel.xaxis.show = xshow);
+      eachPanel.yaxes && eachPanel.yaxes.forEach(function (eachY){
+      eachY.show = yshow;
+      });
+      eachPanel.legend && (eachPanel.legend.show = lshow);
+      });
+      return config;
+      }
+
+      function resize(config, opts){
+      let lastX=0, lastY=0;
+      config.panels.forEach(function(eachPanel, index){    
+      eachPanel.gridPos.h = Math.floor(opts.h);
+      eachPanel.gridPos.w = Math.floor(opts.w);
+      eachPanel.gridPos.x = Number(lastX);
+      eachPanel.gridPos.y = Number(lastY);
+      lastX += opts.w;
+      let willOverFlow = (lastX + opts.w > opts.maxX)
+      lastY = willOverFlow ? lastY + opts.h : lastY;
+      lastX = willOverFlow ? 0 : lastX;
+
+      });
+      return config;
+      }
+
+      function perform_op() {
+      document.getElementById("sp_err").textContent = "";
+      var h = parseInt(document.getElementById("ip_height").value);
+      var w = parseInt(document.getElementById("ip_width").value);
+      var ha = parseInt(document.getElementById("cb_hide_axis").value);
+      var hl = parseInt(document.getElementById("cb_hide_legends").value);
+      var input = document.getElementById("ta_input").value;
+      try {
+      input = JSON.parse(input)
+      } catch(ex){
+      document.getElementById("sp_err").textContent = "invalid json in input";
+      }
+      var opts = {
+      h:h,
+      w:w,
+      ha: ha,
+      hl:hl
+      }
+      var output = transform(input, opts);
+      document.getElementById("ta_output").value = JSON.stringify(output,null,2);
+      document.getElementById("ta_output").select();
+      document.execCommand("copy");
+      document.getElementById("sp_msg").textContent = "Copied output to clipboard";
+      document.getElementById("sp_msg").focus({preventScroll:false});
+      }
+    </script>
+  </head>
+  <body>
+    <table align="center" style="width:100%">
+      <tr>
+        single options </br>
+        Height - <input type="text" id="ip_height" value="4"><br>
+        Width - <input type="text" id="ip_width" value="4"><br>
+        Hide axis <input type="checkbox" id="cb_hide_axis" value="1" checked><br>
+        Hide legends<input type="checkbox" id="cb_hide_legends" value="1" checked><br>
+        <button onclick="perform_op()">Click me</button>
+        <span id="sp_err" style="color:red"></span>
+        <span id="sp_msg" style="color:green"></span>
+      </tr>
+      <tr>
+        <td>
+          Input</br>
+          <textarea id="ta_input" rows="30" cols="60" required=true>
+          </textarea>
+        </td>
+        <td>
+          Output</br>
+          <textarea id="ta_output" rows="30" cols="60">
+          </textarea>          
+        </td>
+      <tr>
+    </table>
+  </body>
+</html>
